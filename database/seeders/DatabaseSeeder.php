@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Rank;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,10 +21,10 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'fullname' => 'IT Support',
             'email' => 'itsupport@perdana.my',
-            'role' => 'Administrator',
+            'role' => 'Super Admin',
         ]);
 
-        $Rank = 
+        $Rank =
         Rank::firstOrCreate([
             'rank_name' => 'Captain',
             'rank_description' => 'The highest-ranking officer on the ship, responsible for overall command and decision-making.',
@@ -37,6 +37,6 @@ class DatabaseSeeder extends Seeder
             'category' => 'Command Crew',
             'is_active' => 1,
         ]);
-        
+
     }
 }

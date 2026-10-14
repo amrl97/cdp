@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -28,9 +30,36 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureAuthentication();
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+    }
+
+    /**
+     * Restrict the staff login to active staff accounts.
+     */
+    private function configureAuthentication(): void
+    {
+        Fortify::authenticateUsing(function (Request $request): ?User {
+            $password = $request->string('password')->toString();
+
+            $user = User::query()
+                ->where('email', $request->string(Fortify::username())->toString())
+                ->first();
+
+            if ($user === null || $user->password === null) {
+                Hash::make($password);   // same work as a real check, so timing does not give the answer away
+
+                return null;
+            }
+
+            if (! Hash::check($password, $user->password)) {
+                return null;
+            }
+
+            return ($user->is_active && $user->isStaff()) ? $user : null;
+        });
     }
 
     /**

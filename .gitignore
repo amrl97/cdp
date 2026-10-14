@@ -10,7 +10,7 @@
 /resources/js/actions
 /resources/js/routes
 /resources/js/wayfinder
-/tests/Feature/Models/RelationshipsTest.php
+/tests
 /vendor
 .DS_Store
 .env
